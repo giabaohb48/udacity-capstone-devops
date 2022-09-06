@@ -25,7 +25,7 @@ pipeline {
         stage('verify aws-cli v2, eksctl, kubectl') {
             steps {
                 //sh 'ansible --version'
-                withCredentials(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+                withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
                     sh 'aws --version'
                     sh 'aws configure list'
                     sh 'aws iam get-user'
