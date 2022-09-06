@@ -14,7 +14,7 @@ As a capstone project, the directions are rather more open-ended than they were 
 
 ## Project Steps
 
-* Create an AWS EC2 instance for Jenkins server and another AWS EC2 instance for a Jenkins agent
+* Create an AWS EC2 instance for Jenkins server and another AWS EC2 instance for a Jenkins agent1
     * The Jenkins server itself is the "master" agent for build pipelines, so having another AWS EC2 instance as a Jenkins agent is optional.
     * After installing the Jenkins server, install necessary plugins such as Blue Ocean, Pipeline: AWS Steps, and Docker Pipeline.
     * Add credentials of Jenkins agent(s)' SSH private key(s), AWS, and dockerhub.
