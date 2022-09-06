@@ -2,13 +2,12 @@
 // use double quotes to reference variables
 // Validate Jenkinfiles in VSCode: https://llu.is/validate-jenkinfiles-in-vscode/
 pipeline {
-    agent {
-        label 'jenkins-agent-1'
-    }  // add a new agent: https://medium.com/@_oleksii_/how-to-deploy-jenkins-agent-and-connect-it-to-jenkins-master-in-microsoft-azure-ffeb085957c0
+    agent any 
+    // add a new agent: https://medium.com/@_oleksii_/how-to-deploy-jenkins-agent-and-connect-it-to-jenkins-master-in-microsoft-azure-ffeb085957c0
     environment {
-        AWS_REGION = 'us-east-2'
-        EKS_CLUSTER_NAME = 'udacity-cloud-devops-capstone'
-        DOCKER_IMAGE_NAME = 'udacity-cloud-devops-capstone'
+        AWS_REGION = 'us-east-1'
+        EKS_CLUSTER_NAME = 'udacity-devops-capstone'
+        DOCKER_IMAGE_NAME = 'udacity-devops-capstone'
     }
     stages {
         stage('verify the build system') {
@@ -69,9 +68,9 @@ pipeline {
         }
         stage('push docker image') {
             steps {
-                withDockerRegistry([credentialsId: "dockerhub", url: ""]) {
-                    sh 'docker tag ${DOCKER_IMAGE_NAME} zhulingchen/${DOCKER_IMAGE_NAME}'
-                    sh 'docker push zhulingchen/${DOCKER_IMAGE_NAME}'
+                withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) { {
+                    sh 'docker tag ${DOCKER_IMAGE_NAME} giabaohb48/${DOCKER_IMAGE_NAME}'
+                    sh 'docker push giabaohb48/${DOCKER_IMAGE_NAME}'
                 }  // see https://devops4solutions.com/publish-docker-image-to-dockerhub-using-jenkins-pipeline/
                 sh 'docker rmi -f $(docker images -q)'
                 sh 'docker image ls'
@@ -91,7 +90,6 @@ pipeline {
                         if (EKS_ARN.isEmpty()) {
                             sh """
                             eksctl create cluster --name ${EKS_CLUSTER_NAME} \
-                                                  --version 1.17 \
                                                   --nodegroup-name standard-workers \
                                                   --node-type t2.medium \
                                                   --nodes 2 \
