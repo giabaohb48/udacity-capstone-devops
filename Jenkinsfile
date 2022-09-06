@@ -28,7 +28,6 @@ pipeline {
                 //sh 'ansible --version'
                 withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}", profile:'default') {
                     sh 'aws --version'
-                    sh 'aws iam get-user'
                     sh 'eksctl version'
                     sh 'kubectl version --short --client'
                 }  // see https://support.cloudbees.com/hc/en-us/articles/360027893492-How-To-Authenticate-to-AWS-with-the-Pipeline-AWS-Plugin
