@@ -8,6 +8,7 @@ pipeline {
         AWS_REGION = 'us-east-1'
         EKS_CLUSTER_NAME = 'udacity-devops-capstone'
         DOCKER_IMAGE_NAME = 'udacity-devops-capstone'
+        AWS_PROFILE = 'default'
     }
     stages {
         stage('verify the build system') {
@@ -25,7 +26,7 @@ pipeline {
         stage('verify aws-cli v2, eksctl, kubectl') {
             steps {
                 //sh 'ansible --version'
-                withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+                withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}", profile:'default') {
                     sh 'aws --version'
                     sh 'aws configure list'
                     sh 'aws iam get-user'
