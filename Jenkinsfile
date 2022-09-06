@@ -28,7 +28,6 @@ pipeline {
                 //sh 'ansible --version'
                 withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}", profile:'default') {
                     sh 'aws --version'
-                    sh 'aws configure list'
                     sh 'aws iam get-user'
                     sh 'eksctl version'
                     sh 'kubectl version --short --client'
