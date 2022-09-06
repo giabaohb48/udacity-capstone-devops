@@ -6,7 +6,7 @@ install:
 	pip install -r requirements.txt
 
 lint:
-	hadolint Dockerfile
+	hadolint ./myapp/Dockerfile
 	pylint --disable=R,C,W1203 myapp.py
 	pylint --disable=R,C,W1203 wsgi.py
 
