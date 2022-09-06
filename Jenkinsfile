@@ -61,7 +61,7 @@ pipeline {
                 sh 'docker container ls'
                 sh 'docker run -d -p 80:80 ${DOCKER_IMAGE_NAME}'
                 sh 'sleep 1s'
-                sh 'curl http://localhost:80'
+                sh 'curl http://localhost'
                 sh 'docker stop $(docker ps -a -q)'
                 sh 'docker rm -f $(docker ps -a -q)'
                 sh 'docker container ls'
