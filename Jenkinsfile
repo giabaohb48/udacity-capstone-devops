@@ -68,7 +68,7 @@ pipeline {
         }
         stage('push docker image') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) { {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) { 
                     sh 'docker tag ${DOCKER_IMAGE_NAME} giabaohb48/${DOCKER_IMAGE_NAME}'
                     sh 'docker push giabaohb48/${DOCKER_IMAGE_NAME}'
                 }  // see https://devops4solutions.com/publish-docker-image-to-dockerhub-using-jenkins-pipeline/
