@@ -26,7 +26,11 @@ pipeline {
         stage('verify aws-cli v2, eksctl, kubectl') {
             steps {
                 //sh 'ansible --version'
-                withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}", profile:'default') {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-credentials',
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                // withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}", profile:'default') {
                     sh 'aws --version'
                     sh 'eksctl version'
                     sh 'kubectl version --short --client'
@@ -82,7 +86,11 @@ pipeline {
         }
         stage('deploy to AWS EKS') {
             steps {
-                withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+                // withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-credentials',
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                     script {
                         // determine whether the AWS EKS cluster ARN exists
                         def EKS_ARN = sh(
@@ -125,7 +133,11 @@ pipeline {
         }
         stage('verify deployment') {
             steps {
-                withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+                // withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-credentials',
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                     script {
                         def EKS_HOSTNAME = sh(
                             script: 'kubectl get svc simple-web-app -o jsonpath="{.status.loadBalancer.ingress[*].hostname}"',
@@ -138,7 +150,11 @@ pipeline {
         }
         stage('check rollout') {
             steps {
-                withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+                // withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+                withCredentials([[$class: 'AmazonWerbServicesCredentialsBinding',
+                    credentialsId: 'aws-credentials',
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                     sh 'kubectl rollout status deployments/simple-web-app'
                 }
             }
