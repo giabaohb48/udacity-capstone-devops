@@ -94,7 +94,7 @@ pipeline {
                     script {
                         // determine whether the AWS EKS cluster ARN exists
                         def EKS_ARN = sh(
-                            script: "aws cloudformation list-exports --query \"Exports[?Name=='eksctl-${EKS_CLUSTER_NAME}-cluster::ARN'].Value\" --output text",
+                            script: "aws cloudformation list-exports --query \"Exports[?Name=='eksctl-${EKS_CLUSTER_NAME}-cluster::ARN'].Value\" --output text ",
                             returnStdout: true
                         ).trim()
                         // create the AWS EKS cluster by eksctl if its ARN does not exist
@@ -108,15 +108,16 @@ pipeline {
                                                     --nodes-max 2 \
                                                     --node-ami auto \
                                                     --region ${AWS_REGION}
+                                                    --profile ${AWS_PROFILE}
                                 """
                             sh 'sleep 2m'  // wait for creation
                             // update the value of EKS_ARN after the cluster is created
                             EKS_ARN = sh(
-                                script: "aws cloudformation list-exports --query \"Exports[?Name=='eksctl-${EKS_CLUSTER_NAME}-cluster::ARN'].Value\" --output text",
+                                script: "aws cloudformation list-exports --query \"Exports[?Name=='eksctl-${EKS_CLUSTER_NAME}-cluster::ARN'].Value\" --output text --profile ${AWS_PROFILE}",
                                 returnStdout: true
                             ).trim()
                         }
-                        sh 'aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME}'
+                        sh 'aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --profile ${AWS_PROFILE}'
                         sh "kubectl config use-context ${EKS_ARN}"
                     }
                     sh 'kubectl config current-context'
