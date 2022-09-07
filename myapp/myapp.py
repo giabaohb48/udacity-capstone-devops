@@ -4,6 +4,7 @@
 from flask import Flask
 app = Flask(__name__)
 blue = 0
+blue2 = 
 @app.route("/")
 def hello():
     browser_str = "<h1 style='color:blue'>Hello World!<br>" \
