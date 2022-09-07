@@ -108,7 +108,6 @@ pipeline {
                                                     --nodes-max 2 \
                                                     --region ${AWS_REGION}
                                 """
-                            sh 'sleep 2m'  // wait for creation
                             // update the value of EKS_ARN after the cluster is created
                             EKS_ARN = sh(
                                 script: "aws cloudformation list-exports --query \"Exports[?Name=='eksctl-${EKS_CLUSTER_NAME}-cluster::ARN'].Value\" --output text",
@@ -150,7 +149,7 @@ pipeline {
         stage('check rollout') {
             steps {
                 // withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
-                withCredentials([[$class: 'AmazonWerbServicesCredentialsBinding',
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'aws-credentials',
                     accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
