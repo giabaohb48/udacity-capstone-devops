@@ -94,7 +94,7 @@ pipeline {
                     script {
                         // determine whether the AWS EKS cluster ARN exists
                         def EKS_ARN = sh(
-                            script: "aws cloudformation list-exports --query \"Exports[?Name=='eksctl-${EKS_CLUSTER_NAME}-cluster::ARN'].Value\" --output text ",
+                            script: "aws cloudformation list-exports --query \"Exports[?Name=='eksctl-${EKS_CLUSTER_NAME}-cluster::ARN'].Value\" --output text --profile ${AWS_PROFILE}",
                             returnStdout: true
                         ).trim()
                         // create the AWS EKS cluster by eksctl if its ARN does not exist
