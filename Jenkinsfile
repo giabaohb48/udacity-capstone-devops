@@ -106,7 +106,6 @@ pipeline {
                                                     --nodes 2 \
                                                     --nodes-min 1 \
                                                     --nodes-max 2 \
-                                                    --node-ami auto \
                                                     --region ${AWS_REGION}
                                                     --profile ${AWS_PROFILE}
                                 """
