@@ -59,21 +59,23 @@ pipeline {
             steps {
                 sh 'docker image ls'
                 sh 'docker container ls'
-                sh 'docker run -d -p 80:80 ${DOCKER_IMAGE_NAME}'
+                sh 'docker run -d -p 80:80 --name capstone ${DOCKER_IMAGE_NAME}'
                 sh 'sleep 1s'
-                sh 'curl http://localhost/'
-                sh 'docker stop $(docker ps -a -q)'
-                sh 'docker rm -f $(docker ps -a -q)'
+                sh 'curl 54.175.183.40'
+                sh 'docker stop $(docker ps -aqf "name=capstone")'
+                sh 'docker rm -f $(docker ps -aqf "name=capstone")'
                 sh 'docker container ls'
             }
         }
+
         stage('push docker image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) { 
                     sh 'docker tag ${DOCKER_IMAGE_NAME} giabaohb48/${DOCKER_IMAGE_NAME}'
                     sh 'docker push giabaohb48/${DOCKER_IMAGE_NAME}'
                 }  // see https://devops4solutions.com/publish-docker-image-to-dockerhub-using-jenkins-pipeline/
-                sh 'docker rmi -f $(docker images -q)'
+                sh 'docker rmi -f ${DOCKER_IMAGE_NAME}'
+                sh 'docker rmi -f giabaohb48/${DOCKER_IMAGE_NAME}'
                 sh 'docker image ls'
                 //sh 'docker system prune'
             }
@@ -90,15 +92,15 @@ pipeline {
                         // create the AWS EKS cluster by eksctl if its ARN does not exist
                         if (EKS_ARN.isEmpty()) {
                             sh """
-                            eksctl create cluster --name ${EKS_CLUSTER_NAME} \
-                                                  --nodegroup-name standard-workers \
-                                                  --node-type t2.medium \
-                                                  --nodes 2 \
-                                                  --nodes-min 1 \
-                                                  --nodes-max 2 \
-                                                  --node-ami auto \
-                                                  --region ${AWS_REGION}
-                            """
+                                eksctl create cluster --name ${EKS_CLUSTER_NAME} \
+                                                    --nodegroup-name standard-workers \
+                                                    --node-type t2.medium \
+                                                    --nodes 2 \
+                                                    --nodes-min 1 \
+                                                    --nodes-max 2 \
+                                                    --node-ami auto \
+                                                    --region ${AWS_REGION}
+                                """
                             sh 'sleep 2m'  // wait for creation
                             // update the value of EKS_ARN after the cluster is created
                             EKS_ARN = sh(
